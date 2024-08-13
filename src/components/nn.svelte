@@ -1,6 +1,4 @@
 <script lang="ts">
-    import { createSourceMapSource } from "typescript";
-
     class neuron {
         value: number;
         bias: number;
@@ -47,13 +45,13 @@
 
     outputLayer.neurons[0].bias = -0.58;
 
-    $: {
+    function neuralNetwork(x: number) {
         console.clear();
+        let result = 0;
         // Value Calculation for every neuron in hidden layer
         // First Neuron
         let netIntput =
-            inputLayer.neurons[0].value * inputLayer.neurons[0].weights[0] +
-            hiddenLayer.neurons[0].bias;
+            x * inputLayer.neurons[0].weights[0] + hiddenLayer.neurons[0].bias;
 
         hiddenLayer.neurons[0].value = Math.log(
             1 + Math.pow(Math.E, netIntput)
@@ -61,8 +59,7 @@
 
         // Second Neuron
         netIntput =
-            inputLayer.neurons[0].value * inputLayer.neurons[0].weights[1] +
-            hiddenLayer.neurons[1].bias;
+            x * inputLayer.neurons[0].weights[1] + hiddenLayer.neurons[1].bias;
         hiddenLayer.neurons[1].value = Math.log(
             1 + Math.pow(Math.E, netIntput)
         );
@@ -76,14 +73,47 @@
             ).toFixed(7)
         );
 
-        outputLayer.neurons[0].value =
+        result =
             hiddenLayer.neurons[0].value * hiddenLayer.neurons[0].weights[0] +
             hiddenLayer.neurons[1].value * hiddenLayer.neurons[1].weights[0] +
             outputLayer.neurons[0].bias;
+        return result;
     }
+    $: outputLayer.neurons[0].value = neuralNetwork(
+        inputLayer.neurons[0].value
+    );
+
+    import Plotly from "plotly.js-dist";
+    const xValues = [];
+    const yValues = [];
+    for (let x = -10; x <= 10; x += 0.1) {
+        xValues.push(x);
+        yValues.push(neuralNetwork(x));
+    }
+
+    // Plot the function
+    const trace = {
+        x: xValues,
+        y: yValues,
+        type: "scatter",
+    };
+
+    const layout = {
+        title: "Neural Network Function",
+        xaxis: {
+            title: "Input",
+            range: [-0.1, 1], // Set the range for the x-axis
+        },
+        yaxis: { 
+            title: "Output", 
+            range: [-2, 4]
+        },
+    };
+
+    Plotly.newPlot("plot", [trace], layout);
 </script>
 
-<div class="w-96 scale-200">
+<div class="w-full flex flex-col justify-center items-center ">
     <label class="form-control w-full max-w-xs">
         <div class="label">
             <span class="label-text">Dossage Value</span>
