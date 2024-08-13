@@ -12,7 +12,8 @@ import Nn from "../components/nn.svelte"
 		<meta name="generator" content={Astro.generator} />
 		<title>Astro</title>
 	</head>
-	<body class="grid place-items-center h-screen w-screen" >
-		<Nn client:load />
+	<body class=" p-5 grid lg:grid-cols-2 grid-cols-1 place-items-center h-screen w-screen" >
+		<Nn client:only="svelte" />
+		<div id="plot" class="" ></div>
 	</body>
 </html>
