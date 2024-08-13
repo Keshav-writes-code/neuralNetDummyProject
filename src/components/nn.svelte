@@ -47,30 +47,39 @@
 
     outputLayer.neurons[0].bias = -0.58;
 
-    $:{
-        console.clear()
+    $: {
+        console.clear();
         // Value Calculation for every neuron in hidden layer
         // First Neuron
         let netIntput =
             inputLayer.neurons[0].value * inputLayer.neurons[0].weights[0] +
             hiddenLayer.neurons[0].bias;
-            
-            hiddenLayer.neurons[0].value = Math.log(1 + Math.pow(Math.E, netIntput));
-            
-            // Second Neuron
+
+        hiddenLayer.neurons[0].value = Math.log(
+            1 + Math.pow(Math.E, netIntput)
+        );
+
+        // Second Neuron
         netIntput =
             inputLayer.neurons[0].value * inputLayer.neurons[0].weights[1] +
             hiddenLayer.neurons[1].bias;
-        hiddenLayer.neurons[1].value = Math.log(1 + Math.pow(Math.E, netIntput));
+        hiddenLayer.neurons[1].value = Math.log(
+            1 + Math.pow(Math.E, netIntput)
+        );
 
         // Value Calculation for every neuron Output layer
         // First Neuron
-        console.log("Output Layer 0", (hiddenLayer.neurons[0].value * hiddenLayer.neurons[0].weights[0]).toFixed(7));
-        
-        outputLayer.neurons[0].value  =
+        console.log(
+            "Output Layer 0",
+            (
+                hiddenLayer.neurons[0].value * hiddenLayer.neurons[0].weights[0]
+            ).toFixed(7)
+        );
+
+        outputLayer.neurons[0].value =
             hiddenLayer.neurons[0].value * hiddenLayer.neurons[0].weights[0] +
-            hiddenLayer.neurons[1].value * hiddenLayer.neurons[1].weights[0]
-            + outputLayer.neurons[0].bias;
+            hiddenLayer.neurons[1].value * hiddenLayer.neurons[1].weights[0] +
+            outputLayer.neurons[0].bias;
     }
 </script>
 
@@ -80,16 +89,29 @@
             <span class="label-text">Dossage Value</span>
             <span class="label-text-alt">0 - 1</span>
         </div>
-        <input type="range" min="0" max="1" step="0.01" class="range" bind:value={inputLayer.neurons[0].value}/>
+        <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            class="range"
+            bind:value={inputLayer.neurons[0].value}
+        />
         <div class="label">
-            <span class="label-text-alt">Value = {inputLayer.neurons[0].value}</span>
+            <span class="label-text-alt"
+                >Value = {inputLayer.neurons[0].value}</span
+            >
         </div>
     </label>
     <div class="stats shadow">
         <div class="stat">
-          <div class="stat-title">Effective?</div>
-          <div class="stat-value">{Math.round(outputLayer.neurons[0].value) == 0 ? "No" : "Yes"} </div>
-          <div class="stat-desc ">{outputLayer.neurons[0].value.toFixed(5)}</div>
+            <div class="stat-title">Effective?</div>
+            <div class="stat-value">
+                {Math.round(outputLayer.neurons[0].value) == 0 ? "No" : "Yes"}
+            </div>
+            <div class="stat-desc">
+                {outputLayer.neurons[0].value.toFixed(5)}
+            </div>
         </div>
-      </div>
+    </div>
 </div>
