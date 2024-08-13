@@ -9,7 +9,7 @@ import tailwind from "@astrojs/tailwind";
 export default defineConfig({
   integrations: [
     UnoCSS({
-    injectReset: true // or a path to the reset file
+        injectReset: true // or a path to the reset file
     }),
     svelte(),
     tailwind()
