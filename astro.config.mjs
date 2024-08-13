@@ -7,7 +7,13 @@ import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [UnoCSS({
+  integrations: [
+    UnoCSS({
     injectReset: true // or a path to the reset file
-  }), svelte(), tailwind()]
+    }),
+    svelte(),
+    tailwind()
+],
+  site: 'https://Keshav-writes-code.github.io',
+  base: 'neuralNetDummyProject',
 });
