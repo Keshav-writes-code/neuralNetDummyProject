@@ -117,16 +117,6 @@
             x * inputLayer.neurons[0].weights[1] + hiddenLayer.neurons[1].bias;
         return (hiddenLayer.neurons[1].weights[0] * Math.log(1 + Math.pow(Math.E, netIntput))) + outputLayer.neurons[0].bias;
     })
-    const neuron_3_out = new TraceLines("W\O Bias", "scatter", (x:number)=>{
-        let netIntput1 =
-            x * inputLayer.neurons[0].weights[0] + hiddenLayer.neurons[0].bias;
-        let netIntput2 =
-            x * inputLayer.neurons[0].weights[1] + hiddenLayer.neurons[1].bias;
-        
-        let final_1 = (hiddenLayer.neurons[0].weights[0] * Math.log(1 + Math.pow(Math.E, netIntput1)))
-        let final_2 = (hiddenLayer.neurons[1].weights[0] * Math.log(1 + Math.pow(Math.E, netIntput2))) 
-        return final_1 + final_2;
-    })
     const traceDashedLine = {
         x: [-0.1, 1], // Use the same range as your x-axis
         y: [0.5, 0.5],
@@ -161,14 +151,13 @@
             yaxis: {
                 title: "Output",
                 // range: [-0.1,2.5    ]
-            }
+            },
         };
 
         Plotly.newPlot("plot", [
             neuralNet_Out,
             neuron_1_out,
             neuron_2_out,
-            neuron_3_out,
             traceDot,
             traceDashedLine
         ], layout);
