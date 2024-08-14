@@ -12,8 +12,68 @@ import Nn from "../components/nn.svelte"
 		<meta name="generator" content={Astro.generator} />
 		<title>Astro</title>
 	</head>
-	<body class=" p-5 grid lg:grid-cols-2 grid-cols-1 place-items-center h-screen w-screen" >
-		<Nn client:only="svelte" />
-		<div id="plot" class="" ></div>
+	<body class=" p-5 h-screen w-screen grid place-items-center" >
+		<div class="grid lg:grid-cols-2 grid-cols-1 place-items-center gap-24" >
+			<Nn client:only="svelte" />
+			<div id="plot" class="" ></div>
+		</div>
+		<canvas id="nnCanvas" width="600" height="300"></canvas>
 	</body>
 </html>
+
+<script>
+	const canvas = document.getElementById('nnCanvas');
+	const ctx = canvas.getContext('2d');
+
+	function drawNeuron(x, y, bias) {
+		ctx.beginPath();
+		ctx.arc(x, y, 20, 0, 2 * Math.PI);
+		ctx.strokeStyle = 'white';
+		ctx.stroke();
+
+		// Add bias
+		ctx.fillStyle = 'white';
+		ctx.font = '12px Arial';
+		ctx.fillText(`b: ${bias.toFixed(2)}`, x - 15, y + 35);
+	}
+
+	function drawConnection(x1, y1, x2, y2, weight) {
+		ctx.beginPath();
+		ctx.moveTo(x1, y1);
+		ctx.lineTo(x2, y2);
+		ctx.strokeStyle = 'white';
+		ctx.stroke();
+
+		// Add weight
+		let midX = (x1 + x2) / 2;
+		let midY = (y1 + y2) / 2;
+		ctx.fillStyle = 'white';
+		ctx.font = '12px Arial';
+		ctx.fillText(`w: ${weight.toFixed(2)}`, midX, midY);
+	}
+
+	function randomWeight() {
+		return Math.random() * 2 - 1;
+	}
+
+	function randomBias() {
+		return Math.random() * 2 - 1;
+	}
+
+	// Draw input neuron
+	drawNeuron(50, 150, randomBias());
+
+	// Draw hidden neurons
+	drawNeuron(250, 100, randomBias());
+	drawNeuron(250, 200, randomBias());
+
+	// Draw output neuron
+	drawNeuron(450, 150, randomBias());
+
+	// Draw connections with weights
+	drawConnection(70, 150, 230, 100, randomWeight());
+	drawConnection(70, 150, 230, 200, randomWeight());
+	drawConnection(270, 100, 430, 150, randomWeight());
+	drawConnection(270, 200, 430, 150, randomWeight());
+
+</script>
