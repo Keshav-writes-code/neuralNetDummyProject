@@ -1,4 +1,6 @@
 <script lang="ts">
+    import Plotly from "plotly.js-dist";
+    
     class neuron {
         value: number;
         bias: number;
@@ -83,34 +85,97 @@
         inputLayer.neurons[0].value
     );
 
-    import Plotly from "plotly.js-dist";
-    const xValues = [];
-    const yValues = [];
-    for (let x = -10; x <= 10; x += 0.1) {
-        xValues.push(x);
-        yValues.push(neuralNetwork(x));
+    // ------------------------------------------------
+    // ---------------- Plotting Stuff ----------------
+    // ------------------------------------------------
+
+    class TraceLines {
+        x: number[]
+        y: number[]
+        name: string
+        type: string
+        constructor(name: string, type: string, plotter: Function) {
+            this.x = []
+            this.y = []
+            this.name = name
+            this.type = type
+            for (let x = 0; x <= 1; x += 0.01) {
+                this.x.push(x)
+                this.y.push(plotter(x))
+            }
+        }
+    }
+    const neuralNet_Out = new TraceLines("NN Out", "scatter", neuralNetwork);
+    const neuron_1_out = new TraceLines("N1 Out", "scatter", (x:number)=>{
+        let netIntput =
+            x * inputLayer.neurons[0].weights[0] + hiddenLayer.neurons[0].bias;
+
+        return (hiddenLayer.neurons[0].weights[0] * Math.log(1 + Math.pow(Math.E, netIntput)));
+    });
+    const neuron_2_out = new TraceLines("N2 Out", "scatter", (x:number)=>{
+        let netIntput =
+            x * inputLayer.neurons[0].weights[1] + hiddenLayer.neurons[1].bias;
+        return (hiddenLayer.neurons[1].weights[0] * Math.log(1 + Math.pow(Math.E, netIntput))) + outputLayer.neurons[0].bias;
+    })
+    const neuron_3_out = new TraceLines("W\O Bias", "scatter", (x:number)=>{
+        let netIntput1 =
+            x * inputLayer.neurons[0].weights[0] + hiddenLayer.neurons[0].bias;
+        let netIntput2 =
+            x * inputLayer.neurons[0].weights[1] + hiddenLayer.neurons[1].bias;
+        
+        let final_1 = (hiddenLayer.neurons[0].weights[0] * Math.log(1 + Math.pow(Math.E, netIntput1)))
+        let final_2 = (hiddenLayer.neurons[1].weights[0] * Math.log(1 + Math.pow(Math.E, netIntput2))) 
+        return final_1 + final_2;
+    })
+    const traceDashedLine = {
+        x: [-0.1, 1], // Use the same range as your x-axis
+        y: [0.5, 0.5],
+        mode: 'lines',
+        type: 'scatter',
+        line: {
+            dash: 'dash',
+            width: 2,
+            color: 'green'
+        },
+        name: 'Threshold'
+    };
+    $: {
+        const traceDot = {
+            x: [inputLayer.neurons[0].value],
+            y: [outputLayer.neurons[0].value],
+            mode: 'markers',
+            type: 'scatter',
+            marker: {
+                size: 10,
+                color: 'red'
+            },
+            name: 'Point'
+        };
+
+        const layout = {
+            title: "Neural Network Function",
+            xaxis: {
+                title: "Input",
+                // range: [-0.1,1]
+            },
+            yaxis: {
+                title: "Output",
+                // range: [-0.1,2.5    ]
+            }
+        };
+
+        Plotly.newPlot("plot", [
+            neuralNet_Out,
+            neuron_1_out,
+            neuron_2_out,
+            neuron_3_out,
+            traceDot,
+            traceDashedLine
+        ], layout);
     }
 
-    // Plot the function
-    const trace = {
-        x: xValues,
-        y: yValues,
-        type: "scatter",
-    };
 
-    const layout = {
-        title: "Neural Network Function",
-        xaxis: {
-            title: "Input",
-            range: [-0.1, 1], // Set the range for the x-axis
-        },
-        yaxis: { 
-            title: "Output", 
-            range: [-2, 4]
-        },
-    };
-
-    Plotly.newPlot("plot", [trace], layout);
+    
 </script>
 
 <div class="w-full flex flex-col justify-center items-center ">
